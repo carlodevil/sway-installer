@@ -1,57 +1,127 @@
-### Sway Config (Nord themed) ###
-# Mod key: keep Mod4, but Alt↔Win swap makes Alt act as Mod
+# ──────────────────────────────────────────────────────────
+# Sway config ported from your Hyprland setup
+# ──────────────────────────────────────────────────────────
+
+# Mod and input
 set $mod Mod4
-
-
-font pango:JetBrainsMono Nerd Font 11
-
-
 input * {
-xkb_layout us
-xkb_options altwin:swap_alt_win
-tap enabled
-natural_scroll enabled
+    xkb_layout us
+    xkb_options altwin:swap_alt_win   # Alt↔Win swap -> Alt acts as $mod
+    tap enabled
+    natural_scroll enabled
 }
 
+# Cursor size (approximate Hypr env); also set in environment.d
+seat seat0 xcursor_theme default 24
 
-# Solid Nord background
-exec_always --no-startup-id swaybg -m solid_color -c '#2E3440'
+# Output / monitors (mirror HDMI to eDP)
+output eDP-1  resolution 1920x1080@60 position 0,0
+output HDMI-A-1 resolution 1920x1080@60 enable
+# Simple mirror: place HDMI at 0,0 as well
+output HDMI-A-1 position 0,0
 
+# Background: solid Nord, with image fallback if present
+exec_always --no-startup-id sh -lc 'if [ -f "$HOME/.config/sway/wall.jpg" ]; then exec swaybg -m fill -i "$HOME/.config/sway/wall.jpg"; else exec swaybg -m solid_color -c "#2E3440"; fi'
 
-# Wayland/systemd env
+# Ensure systemd user env for portals/Electron
 exec_always --no-startup-id dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP=sway
 exec_always --no-startup-id systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP
 
+# Gaps / borders (approximate Hypr general{} and border_size)
+gaps inner 3
+gaps outer 7
+default_border pixel 1
 
-# Idle/lock
-exec --no-startup-id swayidle -w \
-timeout 300 'swaylock -f -c 2E3440' \
-timeout 1800 'systemctl suspend' \
-resume 'swaymsg "output * power on"' \
-before-sleep 'swaylock -f -c 2E3440'
+# Floating modifier similar to Hypr mouse drag/resize with mainMod
+floating_modifier $mod normal
 
+# --- Keybindings (mapped from Hypr) ---
+# Apps
+set $term foot
+set $files thunar
+set $menu rofi -show drun
 
-# Keybindings (Alt is $mod due to swap)
-bindsym $mod+Return exec foot
-bindsym $mod+Shift+Return exec kitty
-bindsym $mod+d exec rofi -show drun
-bindsym $mod+q kill
-bindsym $mod+Shift+e exec swaynag -t warning -m 'Exit Sway?' -b 'Yes' 'swaymsg exit'
+bindsym $mod+q exec $term
+bindsym $mod+c kill
+bindsym $mod+m exec swaynag -t warning -m 'Exit Sway?' -b 'Yes' 'swaymsg exit'
+bindsym $mod+e exec $files
+bindsym $mod+v floating toggle
+bindsym $mod+r exec $menu
+# Hypr pseudo/togglesplit don’t exist in Sway; nearest:
+bindsym $mod+p layout toggle split
+bindsym $mod+j split toggle
 
+# Screenshots (Hypr used grimblast; we’ll use grim+slurp+swappy)
+bindsym $mod+k exec grim -g "$(slurp)" - | swappy -f -
 
-# Screenshots
-bindsym Print exec grim -g "$(slurp)" - | swappy -f -
-bindsym Shift+Print exec grim ~/Pictures/screenshot-$(date +%F-%H%M%S).png
+# Focus with arrows
+bindsym $mod+Left  focus left
+bindsym $mod+Right focus right
+bindsym $mod+Up    focus up
+bindsym $mod+Down  focus down
 
+# Workspaces 1..10
+set $ws1 1; set $ws2 2; set $ws3 3; set $ws4 4; set $ws5 5
+set $ws6 6; set $ws7 7; set $ws8 8;
 
-# Audio / Brightness
-bindsym XF86AudioRaiseVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
-bindsym XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
-bindsym XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
-bindsym XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
-bindsym XF86MonBrightnessUp exec brightnessctl set +5%
-bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
+bindsym $mod+1 workspace number $ws1
+bindsym $mod+2 workspace number $ws2
+bindsym $mod+3 workspace number $ws3
+bindsym $mod+4 workspace number $ws4
+bindsym $mod+5 workspace number $ws5
+bindsym $mod+6 workspace number $ws6
+bindsym $mod+7 workspace number $ws7
+bindsym $mod+8 workspace number $ws8
+bindsym $mod+9 workspace number $ws9
+bindsym $mod+0 workspace number $ws10
 
+# Move container to workspace
+bindsym $mod+Shift+1 move container to workspace number $ws1
+bindsym $mod+Shift+2 move container to workspace number $ws2
+bindsym $mod+Shift+3 move container to workspace number $ws3
+bindsym $mod+Shift+4 move container to workspace number $ws4
+bindsym $mod+Shift+5 move container to workspace number $ws5
+bindsym $mod+Shift+6 move container to workspace number $ws6
+bindsym $mod+Shift+7 move container to workspace number $ws7
+bindsym $mod+Shift+8 move container to workspace number $ws8
+bindsym $mod+Shift+9 move container to workspace number $ws9
+bindsym $mod+Shift+0 move container to workspace number $ws10
 
-# Start Waybar too (belt & braces)
+# “Special workspace magic” ≈ use Sway scratchpad
+bindsym $mod+s scratchpad show
+bindsym $mod+Shift+s move scratchpad
+
+# Scroll through workspaces
+bindsym $mod+button4 workspace prev
+bindsym $mod+button5 workspace next
+
+# Media / volume / mic / brightness (PipeWire wpctl)
+bindsym XF86AudioRaiseVolume exec wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+
+bindsym XF86AudioLowerVolume exec wpctl set-volume    @DEFAULT_AUDIO_SINK@ 5%-
+bindsym XF86AudioMute        exec wpctl set-mute      @DEFAULT_AUDIO_SINK@ toggle
+bindsym XF86AudioMicMute     exec wpctl set-mute      @DEFAULT_AUDIO_SOURCE@ toggle
+bindsym XF86MonBrightnessUp   exec brightnessctl -e set 5%+
+bindsym XF86MonBrightnessDown exec brightnessctl -e set 5%-
+bindsym XF86AudioNext  exec playerctl next
+bindsym XF86AudioPause exec playerctl play-pause
+bindsym XF86AudioPlay  exec playerctl play-pause
+bindsym XF86AudioPrev  exec playerctl previous
+
+# --- Autostart (Hypr exec-once → Sway exec_always) ---
+# Bar & notifications (also via systemd --user in your installer)
 exec_always --no-startup-id waybar
+exec_always --no-startup-id mako
+
+# Apps to start (match Hypr): VS Code, Spotify
+exec_always --no-startup-id code
+exec_always --no-startup-id spotify-launcher
+
+# --- Window rules (Hypr windowrule → Sway for_window) ---
+# VS Code → workspace 3
+for_window [app_id="code" class="^Code$"] move container to workspace number 3
+
+# Spotify → workspace 5 and fullscreen
+for_window [app_id="spotify" class="^Spotify$"] move container to workspace number 6, fullscreen enable
+
+# Ignore app maximize requests (Hypr "suppressevent maximize")
+for_window [class=".*"] inhibit_idle fullscreen
