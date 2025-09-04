@@ -1,17 +1,97 @@
+// -*- mode: jsonc -*-
 {
-"layer": "top",
-"position": "top",
-"modules-left": ["sway/workspaces", "sway/mode"],
-"modules-center": ["clock"],
-"modules-right": ["tray", "backlight", "pulseaudio", "network", "bluetooth", "battery", "cpu", "memory", "temperature"],
-"sway/workspaces": {"disable-scroll": true},
-"clock": {"format": "{:%a %Y-%m-%d %H:%M}"},
-"pulseaudio": {"format": "{volume}% {icon}", "tooltip": true},
-"network": {"format-wifi": " {essid} {signal}%", "format-ethernet": "󰈀 {ifname}"},
-"bluetooth": {"format": " {status}", "tooltip": true},
-"battery": {"format": "{capacity}% {icon}", "states": {"warning": 25, "critical": 10}},
-"backlight": {"format": " {percent}%"},
-"cpu": {"interval": 3},
-"memory": {"interval": 5},
-"temperature": {"critical-threshold": 80}
+    // "layer": "top", // Waybar at top layer
+    "position": "bottom", // Waybar position (top|bottom|left|right)
+    "height": 32, // Waybar height (to be removed for auto height)
+    "width": 1280, // Waybar width
+    "margin-bottom": 7,
+    // "spacing": 4, // Gaps between modules (4px)
+    // Choose the order of the modules
+    "modules-left": [
+	"hyprland/workspaces",
+        "custom/media"
+    ],
+    "modules-center": [
+        ],
+    "modules-right": [
+        "pulseaudio",
+        "network",
+        "backlight",
+        "battery",
+        "clock",
+        "power-profiles-daemon", 
+    ],
+	"hyprland/workspaces": {
+               "format": "{name}",
+	       "persistent-workspaces": {
+	             "*": 7, // 5 workspaces by default on every monitor
+	             "HDMI-A-1": 0 // but only three on HDMI-A-1
+       }
+},
+    "clock": {
+	"timezone": "Africa/Johannesburg",
+        "interval":60,
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+        "format-alt": "{:%Y-%m-%d}",
+	"format": "{:%H:%M}"
+    },
+    "backlight": {
+        "device": "acpi_video1",
+        "format": "{percent}% {icon}",
+        "format-icons": ["", "", "", "", "", "", "", "", ""]
+    },
+    "battery": {
+        "states": {
+            // "good": 95,
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "{capacity}% {icon}",
+        "format-full": "{capacity}% {icon}",
+        "format-charging": "{capacity}% ",
+        "format-plugged": "{capacity}% ",
+        "format-alt": "{time} {icon}",
+        // "format-good": "", // An empty format will hide the module
+        // "format-full": "",
+        "format-icons": ["", "", "", "", ""]
+    },
+    "power-profiles-daemon": {
+      "format": "{icon}",
+      "tooltip-format": "Power profile: {profile}\nDriver: {driver}",
+      "tooltip": true,
+      "format-icons": {
+        "default": "",
+        "performance": "",
+        "balanced": "",
+        "power-saver": ""
+      }
+    },
+    "network": {
+        // "interface": "wlp2*", // (Optional) To force the use of this interface
+        "format-wifi": "{essid} ",
+        "format-ethernet": "{ipaddr}/{cidr} ",
+        "tooltip-format": "{ifname} via {gwaddr} ",
+        "format-linked": "{ifname} (No IP) ",
+        "format-disconnected": "Disconnected ⚠",
+        "format-alt": "{ifname}: {ipaddr}/{cidr}"
+    },
+    "pulseaudio": {
+        // "scroll-step": 1, // %, can be a float
+        "format": "{volume}% {icon}",
+        "format-bluetooth": "{volume}% {icon} {format_source}",
+        "format-bluetooth-muted": " {icon} {format_source}",
+        "format-muted": " {format_source}",
+        "format-source": "{volume}% ",
+        "format-source-muted": "",
+        "format-icons": {
+            "headphone": "",
+            "hands-free": "",
+            "headset": "",
+            "phone": "",
+            "portable": "",
+            "car": "",
+            "default": ["", "", ""]
+        },
+        "on-click": "pavucontrol"
+    },
 }
