@@ -6,7 +6,7 @@
 set $mod Mod4
 input * {
     xkb_layout us
-    xkb_options altwin:swap_alt_win   # Alt↔Win swap -> Alt acts as $mod
+    xkb_options altwin:swap_alt_win
     tap enabled
     natural_scroll enabled
 }
@@ -15,9 +15,8 @@ input * {
 seat seat0 xcursor_theme default 24
 
 # Output / monitors (mirror HDMI to eDP)
-output eDP-1  resolution 1920x1080@60 position 0,0
-output HDMI-A-1 resolution 1920x1080@60 enable
-# Simple mirror: place HDMI at 0,0 as well
+output eDP-1 enable
+output HDMI-A-1 enable
 output HDMI-A-1 position 0,0
 
 # Background: solid Nord, with image fallback if present
