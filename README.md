@@ -1,6 +1,5 @@
 # sway-nord-setup
 
-
 Single-file installer for Debian (Bookworm/Trixie+) that sets up:
 - Sway + Waybar + Rofi (Nord)
 - PipeWire/WirePlumber, xdg-desktop-portal-wlr (screen sharing)
