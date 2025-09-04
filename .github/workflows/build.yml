@@ -34,7 +34,7 @@ jobs:
           echo "Running build.sh with bash -x"
           bash -x ./scripts/build.sh
 
-      - name: Debug: show build dir
+      - name: Debug - show build dir
         if: always()
         run: |
           echo "workspace listing:"; ls -la
