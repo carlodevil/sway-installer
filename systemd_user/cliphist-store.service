@@ -1,0 +1,12 @@
+[Unit]
+Description=Cliphist clipboard history (wl-paste watcher)
+PartOf=sway-session.target
+
+
+[Service]
+ExecStart=/bin/sh -lc 'wl-paste --type text --watch cliphist store'
+Restart=on-failure
+
+
+[Install]
+WantedBy=sway-session.target

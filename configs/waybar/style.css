@@ -1,0 +1,16 @@
+/* Waybar Nord theme */
+@define-color nord0 #2E3440; @define-color nord1 #3B4252; @define-color nord2 #434C5E; @define-color nord3 #4C566A;
+@define-color nord4 #D8DEE9; @define-color nord5 #E5E9F0; @define-color nord6 #ECEFF4;
+@define-color nord7 #8FBCBB; @define-color nord8 #88C0D0; @define-color nord9 #81A1C1; @define-color nord10 #5E81AC;
+@define-color nord11 #BF616A; @define-color nord12 #D08770; @define-color nord13 #EBCB8B; @define-color nord14 #A3BE8C; @define-color nord15 #B48EAD;
+
+
+* { font-family: "JetBrainsMono Nerd Font", monospace; font-size: 12pt; }
+window#waybar { background-color: @nord0; color: @nord6; border-bottom: 2px solid @nord1; }
+#workspaces button { padding: 0 6px; color: @nord6; }
+#workspaces button.active { background: @nord10; color: @nord6; border-radius: 6px; }
+#tray, #clock, #battery, #cpu, #memory, #temperature, #network, #pulseaudio, #bluetooth, #backlight {
+padding: 0 8px; margin: 0 4px; background: @nord1; border-radius: 8px;
+}
+#battery.warning { color: @nord13; }
+#battery.critical { color: @nord11; }

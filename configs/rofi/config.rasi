@@ -1,0 +1,7 @@
+configuration {
+modi: "drun,run";
+theme: "~/.config/rofi/nord.rasi";
+show-icons: true;
+display-drun: "Apps";
+drun-display-format: "{name}";
+}

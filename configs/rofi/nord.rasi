@@ -1,0 +1,15 @@
+* {
+background: #2E3440;
+background-alt: #3B4252;
+foreground: #ECEFF4;
+selected: #5E81AC;
+active: #88C0D0;
+urgent: #BF616A;
+border: #4C566A;
+spacing: 6;
+font: "JetBrainsMono Nerd Font 12";
+}
+window { background: @background; border: 2px; border-color: @border; }
+mainbox { padding: 10; }
+inputbar { children: [prompt, entry]; }
+listview { lines: 10; }

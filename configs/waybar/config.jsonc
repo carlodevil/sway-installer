@@ -1,0 +1,17 @@
+{
+"layer": "top",
+"position": "top",
+"modules-left": ["sway/workspaces", "sway/mode"],
+"modules-center": ["clock"],
+"modules-right": ["tray", "backlight", "pulseaudio", "network", "bluetooth", "battery", "cpu", "memory", "temperature"],
+"sway/workspaces": {"disable-scroll": true},
+"clock": {"format": "{:%a %Y-%m-%d %H:%M}"},
+"pulseaudio": {"format": "{volume}% {icon}", "tooltip": true},
+"network": {"format-wifi": " {essid} {signal}%", "format-ethernet": "󰈀 {ifname}"},
+"bluetooth": {"format": " {status}", "tooltip": true},
+"battery": {"format": "{capacity}% {icon}", "states": {"warning": 25, "critical": 10}},
+"backlight": {"format": " {percent}%"},
+"cpu": {"interval": 3},
+"memory": {"interval": 5},
+"temperature": {"critical-threshold": 80}
+}

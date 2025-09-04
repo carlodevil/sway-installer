@@ -1,0 +1,13 @@
+[Unit]
+Description=Polkit LXQt Agent
+After=graphical-session.target
+PartOf=sway-session.target
+
+
+[Service]
+ExecStart=/usr/bin/lxqt-policykit-agent
+Type=simple
+
+
+[Install]
+WantedBy=sway-session.target

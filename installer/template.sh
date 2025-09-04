@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+
+# ── bootstrap helpers ─────────────────────────────────────────────────────────
+log() { echo -e "\033[1;36m[setup]\033[0m $*"; }
+warn() { echo -e "\033[1;33m[warn ]\033[0m $*"; }
+err() { echo -e "\033[1;31m[error]\033[0m $*" >&2; }
+require_root() { if [[ ${EUID:-$(id -u)} -ne 0 ]]; then err "Run as root: sudo $0 [--backup|--overwrite|--skip]"; exit 1; fi; }
+
+
+PROMPT_MODE=${PROMPT_MODE:-ask}
+while [[ ${1:-} ]]; do
+case "$1" in
+-y|--overwrite) PROMPT_MODE=overwrite ;;
+--backup) PROMPT_MODE=backup ;;
+--skip) PROMPT_MODE=skip ;;
+esac; shift || true
+done
+
+
+prompt_choice() {
+local prompt=$1
+if [[ "$PROMPT_MODE" != "ask" || ! -t 0 ]]; then
+case "$PROMPT_MODE" in
+overwrite) echo o;; backup|'') echo b;; skip) echo s;; *) echo b;;
+esac; return
+fi
+local ans
+while true; do
+read -rp "$prompt [o]verwrite / [b]ackup / [s]kip: " ans || { echo b; return; }
+case "${ans,,}" in o|overwrite) echo o; return;; b|backup) echo b; return;; s|skip) echo s; return;; esac
+done
+}
+
+
+as_user() { sudo -u "$TARGET_USER" -H bash -lc "$*"; }
+write_user_file() { local dst=$1 content=$2 dstdir tmp; dstdir=$(dirname "$dst"); as_user "mkdir -p '$dstdir'"; tmp=$(mktemp); printf "%s" "$content" >"$tmp"; chown "$TARGET_USER":"$TARGET_USER" "$tmp"; chmod 0644 "$tmp"; mv -f "$tmp" "$dst"; chown "$TARGET_USER":"$TARGET_USER" "$dst"; }
+install_user_file_with_prompt() { local name=$1 dst=$2 content=$3; if as_user "test -e '$dst'"; then log "$name exists: $dst"; local c; c=$(prompt_choice "Replace $name?"); case "$c" in o) log "Overwriting $dst"; write_user_file "$dst" "$content";; b) local bak="${dst}.bak.$(date +%Y%m%d-%H%M%S)"; as_user "mv '$dst' '$bak'"||true; log "Backed up to $bak"; write_user_file "$dst" "$content";; s) log "Skipped $name";; esac; else write_user_file "$dst" "$content"; fi }
+
+
+require_root
+TARGET_USER=${SUDO_USER:-}
+if [[ -z "$TARGET_USER" || "$TARGET_USER" == "root" ]]; then read -rp "Enter username to configure: " TARGET_USER; fi
+if ! id "$TARGET_USER" &>/dev/null; then err "User $TARGET_USER not found"; exit 1; fi
+HOME_DIR=$(getent passwd "$TARGET_USER" | cut -d: -f6)
+log "Configuring for user: $TARGET_USER (home: $HOME_DIR)"
+
+
+# ── install packages ──────────────────────────────────────────────────────────
+apt-get update
+log "Installing base packages"
+DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+sway swaybg swayidle swaylock waybar rofi xwayland \
+foot kitty mako-notifier libnotify-bin \
+wl-clipboard cliphist grim slurp swappy wf-recorder \
+brightnessctl playerctl upower xdg-user-dirs \
+network-manager bluez bluetooth blueman \
+pipewire pipewire-audio pipewire-pulse wireplumber libspa-0.2-bluetooth \
+xdg-desktop-portal xdg-desktop-portal-wlr \
+thunar thunar-archive-plugin file-roller udisks2 udiskie gvfs \
+lxqt-policykit \
+fonts-jetbrains-mono fonts-firacode fonts-noto fonts-noto-color-emoji papirus-icon-theme \
+curl git jq unzip ca-certificates gpg dirmngr apt-transport-https \
+pavucontrol imv || true
+
+
+log "Installing Chromium"
+DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends chromium || true
+
+
+# VS Code repo (idempotent)
+KEYRING="/usr/share/keyrings/packages.microsoft.gpg"
+LIST="/etc/apt/sources.list.d/vscode.list"
+rm -f /etc/apt/trusted.gpg.d/microsoft.gpg /usr/share/keyrings/microsoft.gpg
+sed -i '/packages\.microsoft\.com\/repos\/code/d' /etc/apt/sources.list 2>/dev/null || true
+rm -f "$LIST"
+curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > "$KEYRING"
+echo "deb [arch=amd64,arm64,armhf signed-by=$KEYRING] https://packages.microsoft.com/repos/code stable main" > "$LIST"
+apt-get update
+DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends code || true
+
+
+log "Done. Alt+Enter → Foot, Alt+d → Rofi."
