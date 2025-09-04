@@ -4,7 +4,6 @@
   "description": "Installs a full stylized sway environment with helpers for debian 12.",
   "license": "ISC",
   "author": "CG de Villiers",
-  "type": "shell",
   "main": "dist/setup.sh",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

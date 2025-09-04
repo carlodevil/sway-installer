@@ -14,7 +14,7 @@ Single-file installer for Debian (Bookworm/Trixie+) that sets up:
 ## Usage (on target machine)
 ```bash
 # Option A: run from GitHub raw
-curl -fsSL https://raw.githubusercontent.com/<you>/<repo>/dist/setup.sh | sudo bash -s -- --backup
+curl -fsSL https://raw.githubusercontent.com/carlodevil/sway-installer/dist/setup.sh | sudo bash -s -- --backup
 
 
 # Option B: download then run

@@ -1,5 +1,8 @@
 name: build-installer
 
+permissions:
+  contents: write 
+
 on:
   push:
     branches: [ main ]
