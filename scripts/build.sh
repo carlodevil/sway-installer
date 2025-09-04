@@ -15,7 +15,16 @@ mkdir -p "$WORK_DIR" "$DIST_DIR"
   tar -czf "$TAR_PATH" configs systemd_user
 )
 
-B64=$(base64 -w0 "$TAR_PATH")
+# sanity check: ensure tarball was created and is non-empty
+if [[ ! -s "$TAR_PATH" ]]; then
+  echo "error: tarball missing or empty: $TAR_PATH" >&2
+  echo "build dir listing:" >&2
+  ls -la "$(dirname "$TAR_PATH")" >&2 || true
+  exit 1
+fi
+
+# encode payload (make newline handling portable across base64 implementations)
+B64=$(base64 "$TAR_PATH" | tr -d '\n')
 
 # inject payload into template
 INSTALLER="$DIST_DIR/setup.sh"

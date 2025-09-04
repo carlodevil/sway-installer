@@ -30,7 +30,16 @@ jobs:
         run: chmod +x scripts/build.sh
 
       - name: Build single-file installer
-        run: ./scripts/build.sh
+        run: |
+          echo "Running build.sh with bash -x"
+          bash -x ./scripts/build.sh
+
+      - name: Debug: show build dir
+        if: always()
+        run: |
+          echo "workspace listing:"; ls -la
+          echo ".build listing:"; ls -la .build || true
+          echo "dist listing:"; ls -la dist || true
 
       - name: Upload installer artifact
         uses: actions/upload-artifact@v4
