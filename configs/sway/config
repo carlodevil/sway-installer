@@ -6,7 +6,7 @@
 set $mod Mod4
 input * {
     xkb_layout us
-    xkb_options altwin:swap_alt_win   # Alt↔Win swap; Alt acts as $mod
+    xkb_options altwin:swap_alt_win
     tap enabled
     natural_scroll enabled
 }
