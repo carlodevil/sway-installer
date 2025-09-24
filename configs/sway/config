@@ -121,7 +121,6 @@ bindsym $mod+Shift+Right move right
     # Switch the current container between different layout styles
     bindsym $mod+s layout stacking
     bindsym $mod+w layout tabbed
-    bindsym $mod+e layout toggle split
 
     # Make the current focus fullscreen
     bindsym $mod+f fullscreen
@@ -189,9 +188,5 @@ bindsym $mod+r mode "resize"
     # Special keys to adjust brightness via brightnessctl
     bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
     bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
-
-    # Special key to take a screenshot with grim
-    bindsym Print exec grim
-
 
 include @sysconfdir@/sway/config.d/*
