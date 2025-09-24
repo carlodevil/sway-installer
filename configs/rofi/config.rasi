@@ -16,12 +16,19 @@ drun-display-format: "{name}";
 }
 window { background-color: @background; border: 2px; border-color: @selected; border-radius: 10px; }
 listview { scrollbar: true; }
-element { padding: 4px 6px; }
+element {
+	padding: 4px 6px;
+	background-color: @background;
+	text-color: @foreground;
+}
+element alternate {
+	background-color: @background-alt;
+}
 element selected {
 	background-color: @selected;
-	foreground: #FFFFFF;
-	border: 2px;              /* width */
-	border-color: @active;    /* color */
+	text-color: #FFFFFF;
+	border: 2px;
+	border-color: @active;
 	border-radius: 8px;
 }
 mainbox { padding: 10px; }

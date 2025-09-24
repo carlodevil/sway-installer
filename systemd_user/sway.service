@@ -1,0 +1,18 @@
+[Unit]
+Description=Sway Wayland Compositor (user session)
+Documentation=man:sway(5)
+After=graphical-session.target
+Wants=graphical-session.target sway-session.target
+PartOf=sway-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/sway
+Restart=on-failure
+RestartSec=2
+Environment=XDG_CURRENT_DESKTOP=sway
+Environment=GTK_USE_PORTAL=1
+Environment=QT_QPA_PLATFORM=wayland;xcb
+
+[Install]
+WantedBy=default.target

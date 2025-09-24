@@ -150,11 +150,11 @@ install_user_file_with_prompt "chrome flags" "$HOME_DIR/.config/chrome-flags.con
 CHR
 )"
 
-if ! as_user "systemctl --user is-active --quiet default.target"; then
+USER_SD_SOCKET="$RUNTIME_DIR/systemd/private"
+if [[ ! -S "$USER_SD_SOCKET" ]] || ! run_user_sc is-active --quiet default.target 2>/dev/null; then
   loginctl enable-linger "$TARGET_USER" || true
-  systemctl start "user@$(id -u "$TARGET_USER")" || true
+  systemctl start "user@$(id -u \"$TARGET_USER\")" || true
 fi
-UID_T=$(id -u "$TARGET_USER")
 if run_user_sc daemon-reload 2>/dev/null; then
   run_user_sc enable waybar.service mako.service cliphist-store.service polkit-lxqt.service udiskie.service || true
 else
