@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# ── bootstrap helpers (define early) ─────────────────────────────────────────
+log()  { echo -e "\033[1;36m[setup]\033[0m $*"; }
+warn() { echo -e "\033[1;33m[warn ]\033[0m $*"; }
+err()  { echo -e "\033[1;31m[error]\033[0m $*" >&2; }
+require_root() { if [[ ${EUID:-$(id -u)} -ne 0 ]]; then err "Run as root: sudo $0 [--backup|--overwrite|--skip]"; exit 1; fi; }
+
 # ── logging setup ────────────────────────────────────────────────────────────
 TS=$(date +%Y%m%d-%H%M%S)
 LOG_FILE="/var/log/sway-installer-${TS}.log"
@@ -12,12 +18,6 @@ mkdir -p /var/log || true
 } >>"$LOG_FILE" 2>/dev/null || true
 exec > >(tee -a "$LOG_FILE") 2>&1
 log "Logging to $LOG_FILE"
-
-# ── bootstrap helpers ─────────────────────────────────────────────────────────
-log()  { echo -e "\033[1;36m[setup]\033[0m $*"; }
-warn() { echo -e "\033[1;33m[warn ]\033[0m $*"; }
-err()  { echo -e "\033[1;31m[error]\033[0m $*" >&2; }
-require_root() { if [[ ${EUID:-$(id -u)} -ne 0 ]]; then err "Run as root: sudo $0 [--backup|--overwrite|--skip]"; exit 1; fi; }
 
 PROMPT_MODE=${PROMPT_MODE:-ask}
 OPT_MINIMAL=0
