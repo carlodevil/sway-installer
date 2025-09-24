@@ -1,6 +1,7 @@
 [Unit]
 Description=Waybar status bar
 PartOf=sway-session.target
+# Starts when sway-session.target is active (custom lightweight target)
 
 
 [Service]

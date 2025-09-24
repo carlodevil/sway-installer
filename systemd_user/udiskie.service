@@ -1,6 +1,7 @@
 [Unit]
 Description=udiskie automounter (with tray)
 PartOf=sway-session.target
+# Activated with sway-session.target
 
 
 [Service]

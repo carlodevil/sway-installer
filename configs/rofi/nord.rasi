@@ -12,7 +12,12 @@
 window { background: @background; border: 2px; border-color: @border; border-radius: 10px; }
 listview { scrollbar: true; }
 element { padding: 4 6; }
-element selected { background: @selected; foreground: #ffffff; border-radius: 8px; }
+element selected {
+  background: @selected;
+  foreground: #FFFFFF;
+  border: 2px solid @active;
+  border-radius: 8px;
+}
 mainbox { padding: 10; }
 inputbar { children: [prompt, entry]; }
 listview { lines: 10; }

@@ -1,0 +1,6 @@
+[Unit]
+Description=Sway compositor session (custom target)
+Documentation=man:sway(5)
+BindsTo=graphical-session.target
+Wants=graphical-session.target
+After=graphical-session.target

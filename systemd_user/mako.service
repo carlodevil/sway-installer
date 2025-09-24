@@ -1,6 +1,7 @@
 [Unit]
 Description=Mako notification daemon
 PartOf=sway-session.target
+# Activated with sway-session.target
 
 
 [Service]

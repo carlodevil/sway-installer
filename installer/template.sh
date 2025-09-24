@@ -120,6 +120,10 @@ copy_tree "$TMPD/payload/configs" "$HOME_DIR/.config"
 log "Installing systemd user units"
 copy_tree "$TMPD/payload/systemd_user" "$HOME_DIR/.config/systemd/user"
 
+# Ensure custom sway-session target is enabled (will become active when sway starts if a sway.service binds it)
+sudo -u "$TARGET_USER" XDG_RUNTIME_DIR=/run/user/$(id -u "$TARGET_USER") systemctl --user daemon-reload || true
+sudo -u "$TARGET_USER" XDG_RUNTIME_DIR=/run/user/$(id -u "$TARGET_USER") systemctl --user enable sway-session.target || true
+
 # ── post-install (env + enable user services even without GUI session) ───────
 install_user_file_with_prompt "environment.d (Wayland)" "$HOME_DIR/.config/environment.d/10-wayland.conf" "$(cat <<'ENV'
 XDG_CURRENT_DESKTOP=sway
@@ -143,8 +147,9 @@ if ! as_user "systemctl --user is-active --quiet default.target"; then
 fi
 UID_T=$(id -u "$TARGET_USER")
 sudo -u "$TARGET_USER" XDG_RUNTIME_DIR=/run/user/$UID_T systemctl --user daemon-reload || true
-sudo -u "$TARGET_USER" XDG_RUNTIME_DIR=/run/user/$UID_T systemctl --user \
-  enable --now waybar.service mako.service cliphist-store.service polkit-lxqt.service udiskie.service || true
+# Enable units; they will activate when session target is reached
+sudo -u "$TARGET_USER" XDG_RUNTIME_DIR=/run/user/$UID_T systemctl --user enable \
+  waybar.service mako.service cliphist-store.service polkit-lxqt.service udiskie.service || true
 
 as_user xdg-user-dirs-update
 

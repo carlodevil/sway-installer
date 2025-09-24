@@ -2,6 +2,7 @@
 Description=Polkit LXQt Agent
 After=graphical-session.target
 PartOf=sway-session.target
+# Activated with sway-session.target
 
 
 [Service]

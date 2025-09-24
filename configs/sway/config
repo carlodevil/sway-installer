@@ -11,8 +11,6 @@ input * {
     natural_scroll enabled
 }
 
-output eDP-1 adaptive_sync off
-output eDP-1 mode 2560x1440@144Hz
 
 
 # Background: solid Nord, with image fallback if present
@@ -48,6 +46,16 @@ client.unfocused        $base     $base     $fg      $base     $base
 client.urgent           $urgent   $urgent   $fg      $urgent   $urgent
 client.placeholder      $base     $base     $fg      $base     $base
 client.background       $base
+
+# Appearance: hide title bars/borders (show just content)
+# Appearance: minimal 1px border (no titlebars) with toggle
+default_border pixel 1
+default_floating_border none
+hide_edge_borders smart
+
+# Toggle borders on/off
+bindsym $mod+Shift+b exec swaymsg 'default_border none; default_floating_border none; hide_edge_borders none'
+bindsym $mod+Shift+n exec swaymsg 'default_border pixel 1; default_floating_border none; hide_edge_borders smart'
 
 # --- Keybindings ---
 # Launchers
@@ -165,29 +173,22 @@ bindsym $mod+Shift+Right move right
     # If there are multiple scratchpad windows, this command cycles through them.
     bindsym $mod+minus scratchpad show
 #
-# Resizing containers:
-#
-mode "resize" {
-    # left will shrink the containers width
-    # right will grow the containers width
-    # up will shrink the containers height
-    # down will grow the containers height
-    bindsym $left resize shrink width 10px
-    bindsym $down resize grow height 10px
-    bindsym $up resize shrink height 10px
-    bindsym $right resize grow width 10px
-
-    # Ditto, with arrow keys
-    bindsym Left resize shrink width 10px
-    bindsym Down resize grow height 10px
-    bindsym Up resize shrink height 10px
-    bindsym Right resize grow width 10px
-
-    # Return to default mode
-    bindsym Return mode "default"
-    bindsym Escape mode "default"
-}
-bindsym $mod+r mode "resize"
+# Resizing (direct keybindings instead of a mode)
+# Width adjustments
+bindsym $mod+Ctrl+$left  resize shrink width 10px
+bindsym $mod+Ctrl+$right resize grow   width 10px
+bindsym $mod+Ctrl+Left   resize shrink width 10px
+bindsym $mod+Ctrl+Right  resize grow   width 10px
+# Height adjustments
+bindsym $mod+Ctrl+$up    resize shrink height 10px
+bindsym $mod+Ctrl+$down  resize grow   height 10px
+bindsym $mod+Ctrl+Up     resize shrink height 10px
+bindsym $mod+Ctrl+Down   resize grow   height 10px
+# Fine (smaller) adjustments with Shift
+bindsym $mod+Ctrl+Shift+$left  resize shrink width 2px
+bindsym $mod+Ctrl+Shift+$right resize grow   width 2px
+bindsym $mod+Ctrl+Shift+$up    resize shrink height 2px
+bindsym $mod+Ctrl+Shift+$down  resize grow   height 2px
 #
 # Utilities:
 #

@@ -1,6 +1,7 @@
 [Unit]
 Description=Cliphist clipboard history (wl-paste watcher)
 PartOf=sway-session.target
+# Activated with sway-session.target
 
 
 [Service]
