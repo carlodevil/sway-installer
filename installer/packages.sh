@@ -10,9 +10,9 @@ apt-get update
 
 CORE=(
 sway swaybg swayidle swaylock waybar rofi xwayland
-foot kitty mako-notifier libnotify-bin
+kitty mako-notifier libnotify-bin
 wl-clipboard cliphist grim slurp swappy wf-recorder
-brightnessctl playerctl upower xdg-user-dirs
+brightnessctl playerctl upower power-profiles-daemon xdg-user-dirs
 network-manager bluez bluetooth blueman
 pipewire pipewire-audio pipewire-pulse wireplumber libspa-0.2-bluetooth
 xdg-desktop-portal xdg-desktop-portal-wlr
@@ -25,7 +25,13 @@ pavucontrol imv
 install_pkg_group "Core Wayland desktop + tools" "${CORE[@]}"
 
 
-install_pkg_group "Chromium" chromium || true
+# Google Chrome (stable) repo + install (replaces Chromium)
+KEYRING_GOOGLE="/usr/share/keyrings/google-chrome.gpg"
+echo "Installing: Google Chrome (stable)" >&2
+curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor > "$KEYRING_GOOGLE"
+echo "deb [arch=amd64 signed-by=$KEYRING_GOOGLE] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
+apt-get update
+install_pkg_group "Google Chrome" google-chrome-stable || true
 
 
 # VS Code repo (idempotent)

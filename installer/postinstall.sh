@@ -14,7 +14,7 @@ ENV
 )"
 
 
-install_user_file_with_prompt "chromium flags" "$HOME_DIR/.config/chromium-flags.conf" "$(cat <<'CHR'
+install_user_file_with_prompt "chrome flags" "$HOME_DIR/.config/chrome-flags.conf" "$(cat <<'CHR'
 --enable-features=UseOzonePlatform
 --ozone-platform=wayland
 CHR
@@ -36,4 +36,4 @@ enable --now waybar.service mako.service cliphist-store.service polkit-lxqt.serv
 as_user xdg-user-dirs-update
 
 
-log "Done. Alt+Enter → Foot, Alt+d → Rofi."
+log "Done. Alt+Enter → Kitty, Alt+d → Rofi."

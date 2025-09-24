@@ -23,7 +23,7 @@ exec_always --no-startup-id dbus-update-activation-environment --systemd DISPLAY
 exec_always --no-startup-id systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP
 
 # App shortcuts
-set $term  foot
+set $term  kitty
 set $files thunar
 set $menu  rofi -show drun
 
@@ -32,6 +32,22 @@ set $left h
 set $down j
 set $up k
 set $right l
+
+# Colors (Waybar-aligned palette)
+set $base      #0A0F14
+set $base_alt  #12202A
+set $accent    #075489
+set $accent_hi #0C6FB3
+set $fg        #FFFFFF
+set $urgent    #EB4D4B
+
+# Window decoration colors: border bg text indicator child_border
+client.focused          $accent   $accent   $fg      $accent   $accent
+client.focused_inactive $base_alt $base_alt $fg      $base_alt $base_alt
+client.unfocused        $base     $base     $fg      $base     $base
+client.urgent           $urgent   $urgent   $fg      $urgent   $urgent
+client.placeholder      $base     $base     $fg      $base     $base
+client.background       $base
 
 # --- Keybindings ---
 # Launchers

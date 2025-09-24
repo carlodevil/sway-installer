@@ -1,7 +1,10 @@
-background-color=#2E3440
-text-color=#ECEFF4
-border-color=#5E81AC
+# Unified theme (Waybar accent palette)
+background-color=#075489
+text-color=#FFFFFF
+border-color=#FFFFFF
 border-size=2
 padding=8
 margin=8
 default-timeout=5000
+font=JetBrainsMono Nerd Font 12
+max-visible=5

@@ -7,7 +7,7 @@ desktop with sane defaults and user services.
 - sway, waybar, rofi (Nord theme)
 - PipeWire / WirePlumber and xdg-desktop-portal-wlr
 - NetworkManager, Bluetooth (Blueman)
-- Chromium and VS Code (adds repo/keyring idempotently)
+- Google Chrome and VS Code (adds repo/keyring idempotently)
 - Systemd user units (waybar, mako, cliphist, polkit, udiskie)
 
 ## Quick usage (on the target Debian machine)
@@ -97,7 +97,7 @@ Single-file installer for Debian (Bookworm/Trixie+) that sets up:
 - Sway + Waybar + Rofi (Nord)
 - PipeWire/WirePlumber, xdg-desktop-portal-wlr (screen sharing)
 - NetworkManager, Bluetooth (Blueman)
-- Chromium, VS Code (idempotent repo/keyring)
+- Google Chrome, VS Code (idempotent repo/keyring)
 - Systemd user services (Waybar, Mako, Cliphist, Polkit, Udiskie)
 - Solid Nord background (no image dependency)
 - Alt↔Win swap; **Alt is Mod**
@@ -139,7 +139,6 @@ waybar/style.css
 rofi/config.rasi
 rofi/nord.rasi
 mako/config
-foot/foot.ini
 kitty/kitty.conf
 systemd_user/
 waybar.service

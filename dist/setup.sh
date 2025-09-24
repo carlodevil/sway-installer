@@ -61,9 +61,9 @@ apt-get update
 log "Installing base packages"
 DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
   sway swaybg swayidle swaylock waybar rofi xwayland \
-  foot kitty mako-notifier libnotify-bin \
+  kitty mako-notifier libnotify-bin \
   wl-clipboard cliphist grim slurp swappy wf-recorder \
-  brightnessctl playerctl upower xdg-user-dirs \
+  brightnessctl playerctl upower power-profiles-daemon xdg-user-dirs \
   network-manager bluez bluetooth blueman \
   pipewire pipewire-audio pipewire-pulse wireplumber libspa-0.2-bluetooth \
   xdg-desktop-portal xdg-desktop-portal-wlr \
@@ -73,8 +73,13 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
   curl git jq unzip ca-certificates gpg dirmngr apt-transport-https \
   pavucontrol imv || true
 
-log "Installing Chromium"
-DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends chromium || true
+log "Adding Google Chrome repository"
+KEYRING_GOOGLE="/usr/share/keyrings/google-chrome.gpg"
+curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor > "$KEYRING_GOOGLE"
+echo "deb [arch=amd64 signed-by=$KEYRING_GOOGLE] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
+apt-get update
+log "Installing Google Chrome"
+DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends google-chrome-stable || true
 
 # VS Code repo (idempotent)
 KEYRING="/usr/share/keyrings/packages.microsoft.gpg"
@@ -126,7 +131,7 @@ QT_WAYLAND_DISABLE_WINDOWDECORATION=1
 ENV
 )"
 
-install_user_file_with_prompt "chromium flags" "$HOME_DIR/.config/chromium-flags.conf" "$(cat <<'CHR'
+install_user_file_with_prompt "chrome flags" "$HOME_DIR/.config/chrome-flags.conf" "$(cat <<'CHR'
 --enable-features=UseOzonePlatform
 --ozone-platform=wayland
 CHR
@@ -143,4 +148,4 @@ sudo -u "$TARGET_USER" XDG_RUNTIME_DIR=/run/user/$UID_T systemctl --user \
 
 as_user xdg-user-dirs-update
 
-log "Done. Alt+Enter → Foot, Alt+d → Rofi."
+log "Done. Alt+Enter → Kitty, Alt+d → Rofi. Chrome installed."

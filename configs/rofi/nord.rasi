@@ -1,15 +1,18 @@
 * {
-background: #2E3440;
-background-alt: #3B4252;
-foreground: #ECEFF4;
-selected: #5E81AC;
-active: #88C0D0;
-urgent: #BF616A;
-border: #4C566A;
-spacing: 6;
-font: "JetBrainsMono Nerd Font 12";
+	background: #0A0F14;          /* dark base */
+	background-alt: #12202A;      /* alt background */
+	foreground: #FFFFFF;          /* primary text */
+	selected: #075489;            /* accent (matches Waybar modules) */
+	active: #0C6FB3;              /* lighter accent variant */
+	urgent: #EB4D4B;              /* alert */
+	border: #075489;              /* accent border */
+	spacing: 6;
+	font: "SF Pro Text 13";
 }
-window { background: @background; border: 2px; border-color: @border; }
+window { background: @background; border: 2px; border-color: @border; border-radius: 10px; }
+listview { scrollbar: true; }
+element { padding: 4 6; }
+element selected { background: @selected; foreground: #ffffff; border-radius: 8px; }
 mainbox { padding: 10; }
 inputbar { children: [prompt, entry]; }
 listview { lines: 10; }
