@@ -73,8 +73,17 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
   curl git jq unzip ca-certificates gpg dirmngr apt-transport-https \
   pavucontrol imv || true
 
-log "Installing Chromium"
-DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends chromium || true
+log "Installing Google Chrome"
+KEYRING_CHROME="/usr/share/keyrings/google-linux.gpg"
+LIST_CHROME="/etc/apt/sources.list.d/google-chrome.list"
+if ! command -v google-chrome &>/dev/null; then
+  if ! grep -q "dl.google.com/linux/chrome/deb" "$LIST_CHROME" 2>/dev/null; then
+    curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor > "$KEYRING_CHROME"
+    echo "deb [arch=amd64 signed-by=$KEYRING_CHROME] http://dl.google.com/linux/chrome/deb/ stable main" > "$LIST_CHROME"
+    apt-get update
+  fi
+fi
+DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends google-chrome-stable || true
 
 # VS Code repo (idempotent)
 KEYRING="/usr/share/keyrings/packages.microsoft.gpg"
@@ -126,7 +135,7 @@ QT_WAYLAND_DISABLE_WINDOWDECORATION=1
 ENV
 )"
 
-install_user_file_with_prompt "chromium flags" "$HOME_DIR/.config/chromium-flags.conf" "$(cat <<'CHR'
+install_user_file_with_prompt "chrome flags" "$HOME_DIR/.config/chrome-flags.conf" "$(cat <<'CHR'
 --enable-features=UseOzonePlatform
 --ozone-platform=wayland
 CHR
