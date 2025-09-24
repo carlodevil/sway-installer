@@ -25,17 +25,7 @@ pavucontrol imv
 install_pkg_group "Core Wayland desktop + tools" "${CORE[@]}"
 
 
-log "Setting up Google Chrome repo"
-KEYRING_CHROME="/usr/share/keyrings/google-linux.gpg"
-LIST_CHROME="/etc/apt/sources.list.d/google-chrome.list"
-if ! command -v google-chrome &>/dev/null; then
-	if ! grep -q "dl.google.com/linux/chrome/deb" "$LIST_CHROME" 2>/dev/null; then
-		curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor > "$KEYRING_CHROME"
-		echo "deb [arch=amd64 signed-by=$KEYRING_CHROME] http://dl.google.com/linux/chrome/deb/ stable main" > "$LIST_CHROME"
-		apt-get update
-	fi
-fi
-install_pkg_group "Google Chrome" google-chrome-stable || true
+install_pkg_group "Chromium" chromium || true
 
 
 # VS Code repo (idempotent)

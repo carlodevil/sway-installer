@@ -14,7 +14,7 @@ ENV
 )"
 
 
-install_user_file_with_prompt "chrome flags" "$HOME_DIR/.config/chrome-flags.conf" "$(cat <<'CHR'
+install_user_file_with_prompt "chromium flags" "$HOME_DIR/.config/chromium-flags.conf" "$(cat <<'CHR'
 --enable-features=UseOzonePlatform
 --ozone-platform=wayland
 CHR
