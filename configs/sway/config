@@ -47,16 +47,6 @@ bindsym Shift+Print exec grim ~/Pictures/screenshot-$(date +%F-%H%M%S).png
           timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
           before-sleep 'swaylock -f -c 000000'
 
-### Key bindings
-
-# Start a terminal
-bindsym $mod+Return exec $term
-
-# Kill focused window
-bindsym $mod+Shift+q kill
-
-# Start your launcher
-bindsym $mod+d exec $menu
 
 # Drag floating windows by holding down $mod and left mouse button.
 # Resize them with right mouse button + $mod.
@@ -68,9 +58,7 @@ floating_modifier $mod normal
 # Reload the configuration file
 bindsym $mod+Shift+c reload
 
-# Exit sway (logs you out of your Wayland session)
-bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
-#
+
 # Moving around:
 #
 # Move your focus around
