@@ -14,16 +14,16 @@ drun-display-format: "{name}";
 	spacing: 6;
 	font: "SF Pro Text 13";
 }
-window { background: @background; border: 2px; border-color: @selected; border-radius: 10px; }
+window { background-color: @background; border: 2px; border-color: @selected; border-radius: 10px; }
 listview { scrollbar: true; }
-element { padding: 4 6; }
+element { padding: 4px 6px; }
 element selected {
-	background: @selected;
+	background-color: @selected;
 	foreground: #FFFFFF;
 	border: 2px;              /* width */
 	border-color: @active;    /* color */
 	border-radius: 8px;
 }
-mainbox { padding: 10; }
+mainbox { padding: 10px; }
 inputbar { children: [prompt, entry]; }
 listview { lines: 10; }
