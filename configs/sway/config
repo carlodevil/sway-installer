@@ -11,6 +11,9 @@ input * {
     natural_scroll enabled
 }
 
+output eDP-1 adaptive_sync off
+output DP-1 mode 2560x1440@144Hz
+
 
 # Background: solid Nord, with image fallback if present
 exec_always --no-startup-id sh -lc 'if [ -f "$HOME/.config/sway/wall.jpg" ]; then exec swaybg -m fill -i "$HOME/.config/sway/wall.jpg"; else exec swaybg -m solid_color -c "#2E3440"; fi'
