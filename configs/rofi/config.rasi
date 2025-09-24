@@ -4,4 +4,26 @@ show-icons: true;
 display-drun: "Apps";
 drun-display-format: "{name}";
 }
-@theme "~/.config/rofi/nord.rasi"
+* {
+	background: #0A0F14;          /* dark base */
+	background-alt: #12202A;      /* alt background */
+	foreground: #FFFFFF;          /* primary text */
+	selected: #075489;            /* accent (matches Waybar modules) */
+	active: #0C6FB3;              /* lighter accent variant */
+	urgent: #EB4D4B;              /* alert */
+	border: #075489;              /* accent border */
+	spacing: 6;
+	font: "SF Pro Text 13";
+}
+window { background: @background; border: 2px; border-color: @border; border-radius: 10px; }
+listview { scrollbar: true; }
+element { padding: 4 6; }
+element selected {
+  background: @selected;
+  foreground: #FFFFFF;
+  border: 2px solid @active;
+  border-radius: 8px;
+}
+mainbox { padding: 10; }
+inputbar { children: [prompt, entry]; }
+listview { lines: 10; }

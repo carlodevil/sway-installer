@@ -120,9 +120,18 @@ copy_tree "$TMPD/payload/configs" "$HOME_DIR/.config"
 log "Installing systemd user units"
 copy_tree "$TMPD/payload/systemd_user" "$HOME_DIR/.config/systemd/user"
 
-# Ensure custom sway-session target is enabled (will become active when sway starts if a sway.service binds it)
-sudo -u "$TARGET_USER" XDG_RUNTIME_DIR=/run/user/$(id -u "$TARGET_USER") systemctl --user daemon-reload || true
-sudo -u "$TARGET_USER" XDG_RUNTIME_DIR=/run/user/$(id -u "$TARGET_USER") systemctl --user enable sway-session.target || true
+# Safe user systemd interaction (some environments lack an active user bus during install)
+UID_TGT=$(id -u "$TARGET_USER")
+RUNTIME_DIR="/run/user/$UID_TGT"
+if [[ ! -d $RUNTIME_DIR ]]; then
+  mkdir -p "$RUNTIME_DIR" && chown "$TARGET_USER":"$TARGET_USER" "$RUNTIME_DIR" || true
+fi
+run_user_sc() { sudo -u "$TARGET_USER" XDG_RUNTIME_DIR="$RUNTIME_DIR" systemctl --user "$@"; }
+if run_user_sc daemon-reload 2>/dev/null; then
+  run_user_sc enable sway-session.target || true
+else
+  warn "User systemd not ready (skipping sway-session.target enable)."
+fi
 
 # ── post-install (env + enable user services even without GUI session) ───────
 install_user_file_with_prompt "environment.d (Wayland)" "$HOME_DIR/.config/environment.d/10-wayland.conf" "$(cat <<'ENV'
@@ -146,10 +155,11 @@ if ! as_user "systemctl --user is-active --quiet default.target"; then
   systemctl start "user@$(id -u "$TARGET_USER")" || true
 fi
 UID_T=$(id -u "$TARGET_USER")
-sudo -u "$TARGET_USER" XDG_RUNTIME_DIR=/run/user/$UID_T systemctl --user daemon-reload || true
-# Enable units; they will activate when session target is reached
-sudo -u "$TARGET_USER" XDG_RUNTIME_DIR=/run/user/$UID_T systemctl --user enable \
-  waybar.service mako.service cliphist-store.service polkit-lxqt.service udiskie.service || true
+if run_user_sc daemon-reload 2>/dev/null; then
+  run_user_sc enable waybar.service mako.service cliphist-store.service polkit-lxqt.service udiskie.service || true
+else
+  warn "User systemd not ready (skipping service enable); rerun postinstall or enable manually after login."
+fi
 
 as_user xdg-user-dirs-update
 
