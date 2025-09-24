@@ -11,18 +11,18 @@ drun-display-format: "{name}";
 	selected: #075489;            /* accent (matches Waybar modules) */
 	active: #0C6FB3;              /* lighter accent variant */
 	urgent: #EB4D4B;              /* alert */
-	border: #075489;              /* accent border */
 	spacing: 6;
 	font: "SF Pro Text 13";
 }
-window { background: @background; border: 2px; border-color: @border; border-radius: 10px; }
+window { background: @background; border: 2px; border-color: @selected; border-radius: 10px; }
 listview { scrollbar: true; }
 element { padding: 4 6; }
 element selected {
-  background: @selected;
-  foreground: #FFFFFF;
-  border: 2px solid @active;
-  border-radius: 8px;
+	background: @selected;
+	foreground: #FFFFFF;
+	border: 2px;              /* width */
+	border-color: @active;    /* color */
+	border-radius: 8px;
 }
 mainbox { padding: 10; }
 inputbar { children: [prompt, entry]; }
