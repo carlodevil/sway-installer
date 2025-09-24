@@ -1,57 +1,147 @@
-### Sway Config (Nord themed) ###
-# Mod key: keep Mod4, but Alt↔Win swap makes Alt act as Mod
+# ──────────────────────────────────────────────────────────
+# Sway config (cleaned) – Hyprland-style behavior
+# ──────────────────────────────────────────────────────────
+
+# Mod and input
 set $mod Mod4
-
-
-font pango:JetBrainsMono Nerd Font 11
-
-
 input * {
-xkb_layout us
-xkb_options altwin:swap_alt_win
-tap enabled
-natural_scroll enabled
+    xkb_layout us
+    xkb_options altwin:swap_alt_win
+    tap enabled
+    natural_scroll enabled
 }
 
+# Cursor
+seat seat0 xcursor_theme default 24
 
-# Solid Nord background
-exec_always --no-startup-id swaybg -m solid_color -c '#2E3440'
+# Background: solid Nord, with image fallback if present
+exec_always --no-startup-id sh -lc 'if [ -f "$HOME/.config/sway/wall.jpg" ]; then exec swaybg -m fill -i "$HOME/.config/sway/wall.jpg"; else exec swaybg -m solid_color -c "#2E3440"; fi'
 
-
-# Wayland/systemd env
+# Wayland/systemd env (for portals/Electron apps)
 exec_always --no-startup-id dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP=sway
 exec_always --no-startup-id systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP
 
+# Gaps / borders
+gaps inner 3
+gaps outer 7
+default_border pixel 1
 
-# Idle/lock
-exec --no-startup-id swayidle -w \
-timeout 300 'swaylock -f -c 2E3440' \
-timeout 1800 'systemctl suspend' \
-resume 'swaymsg "output * power on"' \
-before-sleep 'swaylock -f -c 2E3440'
+# App shortcuts
+set $term  foot
+set $files thunar
+set $menu  rofi -show drun
 
-
-# Keybindings (Alt is $mod due to swap)
-bindsym $mod+Return exec foot
-bindsym $mod+Shift+Return exec kitty
-bindsym $mod+d exec rofi -show drun
-bindsym $mod+q kill
+# --- Keybindings ---
+# Launchers
+bindsym $mod+Return exec $term
+bindsym $mod+e      exec $files
+bindsym $mod+d      exec $menu
+bindsym $mod+q      kill
 bindsym $mod+Shift+e exec swaynag -t warning -m 'Exit Sway?' -b 'Yes' 'swaymsg exit'
 
+# Splits / layout
+bindsym $mod+b splith
+bindsym $mod+v splitv
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+f fullscreen
+bindsym $mod+space focus mode_toggle
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+p layout toggle split    # quick toggle
 
 # Screenshots
-bindsym Print exec grim -g "$(slurp)" - | swappy -f -
+bindsym Print       exec grim -g "$(slurp)" - | swappy -f -
 bindsym Shift+Print exec grim ~/Pictures/screenshot-$(date +%F-%H%M%S).png
 
+# Movement (define vim-style vars and also support arrows)
+set $left h
+set $down j
+set $up   k
+set $right l
 
-# Audio / Brightness
-bindsym XF86AudioRaiseVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
-bindsym XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
-bindsym XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
-bindsym XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
-bindsym XF86MonBrightnessUp exec brightnessctl set +5%
-bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
+# Focus
+bindsym $mod+$left  focus left
+bindsym $mod+$down  focus down
+bindsym $mod+$up    focus up
+bindsym $mod+$right focus right
+bindsym $mod+Left   focus left
+bindsym $mod+Down   focus down
+bindsym $mod+Up     focus up
+bindsym $mod+Right  focus right
 
+# Move windows
+bindsym $mod+Shift+$left  move left
+bindsym $mod+Shift+$down  move down
+bindsym $mod+Shift+$up    move up
+bindsym $mod+Shift+$right move right
+bindsym $mod+Shift+Left   move left
+bindsym $mod+Shift+Down   move down
+bindsym $mod+Shift+Up     move up
+bindsym $mod+Shift+Right  move right
 
-# Start Waybar too (belt & braces)
+# Workspaces 1..10
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace number 9
+bindsym $mod+0 workspace number 10
+
+# Move container to workspace
+bindsym $mod+Shift+1 move container to workspace number 1
+bindsym $mod+Shift+2 move container to workspace number 2
+bindsym $mod+Shift+3 move container to workspace number 3
+bindsym $mod+Shift+4 move container to workspace number 4
+bindsym $mod+Shift+5 move container to workspace number 5
+bindsym $mod+Shift+6 move container to workspace number 6
+bindsym $mod+Shift+7 move container to workspace number 7
+bindsym $mod+Shift+8 move container to workspace number 8
+bindsym $mod+Shift+9 move container to workspace number 9
+bindsym $mod+Shift+0 move container to workspace number 10
+
+# Resize mode (kept; no conflict now)
+mode "resize" {
+    bindsym $left  resize shrink width 10px
+    bindsym $down  resize grow   height 10px
+    bindsym $up    resize shrink height 10px
+    bindsym $right resize grow   width 10px
+
+    bindsym Left  resize shrink width 10px
+    bindsym Down  resize grow   height 10px
+    bindsym Up    resize shrink height 10px
+    bindsym Right resize grow   width 10px
+
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+r mode "resize"
+
+# Media / volume / mic / brightness (PipeWire)
+bindsym XF86AudioRaiseVolume exec wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+
+bindsym XF86AudioLowerVolume exec wpctl set-volume    @DEFAULT_AUDIO_SINK@ 5%-
+bindsym XF86AudioMute        exec wpctl set-mute      @DEFAULT_AUDIO_SINK@ toggle
+bindsym XF86AudioMicMute     exec wpctl set-mute      @DEFAULT_AUDIO_SOURCE@ toggle
+bindsym XF86AudioNext        exec playerctl next
+bindsym XF86AudioPause       exec playerctl play-pause
+bindsym XF86AudioPlay        exec playerctl play-pause
+bindsym XF86AudioPrev        exec playerctl previous
+bindsym XF86MonBrightnessUp   exec brightnessctl -e set 5%+
+bindsym XF86MonBrightnessDown exec brightnessctl -e set 5%-
+
+# --- Autostart ---
 exec_always --no-startup-id waybar
+exec_always --no-startup-id mako
+# Optional apps (uncomment if installed)
+# exec_always --no-startup-id code
+# exec_always --no-startup-id spotify
+
+# --- Window rules ---
+# VS Code → workspace 3
+for_window [app_id="code" class="^Code$"] move container to workspace number 3
+
+# Spotify → workspace 6 and fullscreen
+for_window [app_id="spotify" class="^Spotify$"] move container to workspace number 6, fullscreen enable
