@@ -12,7 +12,7 @@ input * {
 }
 
 output eDP-1 adaptive_sync off
-output DP-1 mode 2560x1440@144Hz
+output eDP-1 mode 2560x1440@144Hz
 
 
 # Background: solid Nord, with image fallback if present
