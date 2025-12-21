@@ -8,6 +8,7 @@ PartOf=sway-session.target
 [Service]
 Type=simple
 ExecStart=/usr/bin/sway
+ExecStartPost=/usr/bin/systemctl --user start sway-session.target
 Restart=on-failure
 RestartSec=2
 Environment=XDG_CURRENT_DESKTOP=sway
