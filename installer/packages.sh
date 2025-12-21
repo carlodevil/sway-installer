@@ -29,6 +29,7 @@ install_pkg_group "Core Wayland desktop + tools" "${CORE[@]}"
 KEYRING_GOOGLE="/usr/share/keyrings/google-chrome.gpg"
 echo "Installing: Google Chrome (stable)" >&2
 curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor > "$KEYRING_GOOGLE"
+mkdir -p /etc/apt/sources.list.d
 echo "deb [arch=amd64 signed-by=$KEYRING_GOOGLE] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
 apt-get update
 install_pkg_group "Google Chrome" google-chrome-stable || true

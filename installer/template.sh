@@ -147,7 +147,7 @@ if ! command -v cargo >/dev/null 2>&1; then
 fi
 if ! command -v tuigreet >/dev/null 2>&1; then
   log "Building tuigreet via cargo"
-  sudo -u "$TARGET_USER" bash -lc 'cargo install --locked tuigreet' || warn "tuigreet build failed"
+  sudo -u "$TARGET_USER" bash -lc 'cargo install --locked greetd-tuigreet' || warn "tuigreet build failed"
   [[ -f "$HOME_DIR/.cargo/bin/tuigreet" ]] && install -Dm0755 "$HOME_DIR/.cargo/bin/tuigreet" /usr/local/bin/tuigreet || true
 fi
 
@@ -170,6 +170,7 @@ if [[ $OPT_MINIMAL -eq 0 && $OPT_NO_CHROME -eq 0 ]]; then
     log "Adding Google Chrome repository"
     KEYRING_GOOGLE="/usr/share/keyrings/google-chrome.gpg"
     curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor > "$KEYRING_GOOGLE"
+    mkdir -p /etc/apt/sources.list.d
     echo "deb [arch=amd64 signed-by=$KEYRING_GOOGLE] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
     apt-get update || true
   else
