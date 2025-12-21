@@ -1,12 +1,16 @@
 [Unit]
 Description=Waybar status bar
 PartOf=sway-session.target
+After=sway-session.target
 # Starts when sway-session.target is active (custom lightweight target)
 
 
 [Service]
+Type=simple
+ExecCondition=/bin/sh -c '[ -n "$WAYLAND_DISPLAY" ]'
 ExecStart=/usr/bin/waybar
 Restart=on-failure
+RestartSec=3
 
 
 [Install]

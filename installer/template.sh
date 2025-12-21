@@ -221,6 +221,21 @@ as_user "mkdir -p '$HOME_DIR/.config'"
 log "Installing configs"
 copy_tree "$TMPD/payload/configs" "$HOME_DIR/.config"
 
+# Deploy wallpaper
+if [[ -f "$TMPD/payload/configs/wallpaper/wallpaper.webp" ]]; then
+  log "Installing wallpaper"
+  as_user "mkdir -p '$HOME_DIR/Pictures'"
+  install_user_file_with_prompt "wallpaper" "$HOME_DIR/Pictures/wallpaper.webp" "$(cat "$TMPD/payload/configs/wallpaper/wallpaper.webp")"
+fi
+
+# Install udev rule for backlight control
+if [[ -f "$TMPD/payload/configs/udev/90-backlight.rules" ]]; then
+  log "Installing udev rule for backlight control"
+  cp "$TMPD/payload/configs/udev/90-backlight.rules" /etc/udev/rules.d/90-backlight.rules
+  udevadm control --reload-rules || true
+  udevadm trigger --subsystem-match=backlight || true
+fi
+
 if [[ $OPT_NO_SYSTEMD_USER -eq 0 ]]; then
   log "Installing systemd user units"
   copy_tree "$TMPD/payload/systemd_user" "$HOME_DIR/.config/systemd/user"

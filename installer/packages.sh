@@ -14,7 +14,7 @@ kitty mako-notifier libnotify-bin
 wl-clipboard cliphist grim slurp swappy wf-recorder
 brightnessctl playerctl upower power-profiles-daemon xdg-user-dirs
 network-manager bluez bluetooth blueman
-pipewire pipewire-audio pipewire-pulse wireplumber libspa-0.2-bluetooth
+pipewire pipewire-audio pipewire-pulse wireplumber libspa-0.2-bluetooth pulseaudio-utils
 xdg-desktop-portal xdg-desktop-portal-wlr
 thunar thunar-archive-plugin file-roller udisks2 udiskie gvfs
 lxqt-policykit
