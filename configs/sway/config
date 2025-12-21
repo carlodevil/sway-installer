@@ -14,7 +14,7 @@ input * {
 
 
 # Background: solid Nord, with image fallback if present
-exec_always --no-startup-id sh -lc 'if [ -f "$HOME/.config/sway/wall.jpg" ]; then exec swaybg -m fill -i "$HOME/.config/sway/wall.jpg"; else exec swaybg -m solid_color -c "#2E3440"; fi'
+exec_always --no-startup-id sh -lc 'if [ -f "$HOME/Pictures/Backgrounds/wall.jpg" ]; then exec swaybg -m fill -i "$HOME/Pictures/Backgrounds/wall.jpg"; else exec swaybg -m solid_color -c "#2E3440"; fi'
 
 # Wayland/systemd env (for portals/Electron apps)
 exec_always --no-startup-id dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP=sway
