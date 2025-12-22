@@ -47,5 +47,15 @@ apt-get update
 install_pkg_group "Visual Studio Code" code || true
 
 
+# Spotify repo
+KEYRING_SPOTIFY="/usr/share/keyrings/spotify.gpg"
+LIST_SPOTIFY="/etc/apt/sources.list.d/spotify.list"
+echo "Installing: Spotify" >&2
+curl -fsSL https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | gpg --dearmor > "$KEYRING_SPOTIFY"
+echo "deb [signed-by=$KEYRING_SPOTIFY] http://repository.spotify.com stable non-free" > "$LIST_SPOTIFY"
+apt-get update
+install_pkg_group "Spotify" spotify-client || true
+
+
 systemctl enable --now NetworkManager || true
 systemctl enable --now bluetooth || true

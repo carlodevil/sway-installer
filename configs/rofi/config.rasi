@@ -1,36 +1,132 @@
 configuration {
-modi: "drun,run";
-show-icons: true;
-display-drun: "Apps";
-drun-display-format: "{name}";
+	modi: "drun,run";
+	show-icons: true;
+	display-drun: "Apps";
+	drun-display-format: "{name}";
+	font: "SF Pro Text Bold 11";
 }
+
 * {
-	background: #0A0F14;          /* dark base */
-	background-alt: #12202A;      /* alt background */
-	foreground: #FFFFFF;          /* primary text */
-	selected: #075489;            /* accent (matches Waybar modules) */
-	active: #0C6FB3;              /* lighter accent variant */
-	urgent: #EB4D4B;              /* alert */
-	spacing: 6;
-	font: "SF Pro Text 13";
+	background: rgba(10, 15, 20, 0.75);     /* more transparent for blur */
+	background-alt: rgba(18, 32, 42, 0.6);  /* lighter alt background */
+	foreground: #ffffff;                     /* white text like waybar */
+	selected: rgba(7, 84, 137, 0.5);         /* lighter semi-transparent accent */
+	selected-hover: rgba(12, 111, 179, 0.6);
+	urgent: #eb4d4b;                         /* alert color */
+	border-color: rgba(7, 84, 137, 0.5);
+	spacing: 4;
+	padding: 0;
+	margin: 0;
+	border: 0px;
 }
-window { background-color: @background; border: 2px; border-color: @selected; border-radius: 10px; }
-listview { scrollbar: true; }
-element {
-	padding: 4px 6px;
+
+window {
 	background-color: @background;
+	border: 0px;
+	border-radius: 10px;
+	padding: 0;
+	transparency: "real";
+}
+
+mainbox {
+	background-color: transparent;
+	padding: 10px;
+	border: 0px;
+	spacing: 8px;
+}
+
+inputbar {
+	children: [prompt, entry];
+	background-color: @selected;
+	border-radius: 8px;
+	padding: 8px 10px;
+	margin: 0 0 0 0;
+	spacing: 8px;
+	border: 0px;
+}
+
+prompt {
+	background-color: transparent;
+	text-color: @foreground;
+	font: "SF Pro Text Bold 11";
+}
+
+entry {
+	background-color: transparent;
+	text-color: @foreground;
+	placeholder-color: rgba(255, 255, 255, 0.5);
+	placeholder: "Search...";
+}
+
+listview {
+	background-color: transparent;
+	lines: 8;
+	scrollbar: true;
+	spacing: 4px;
+	border: 0px;
+	padding: 0;
+}
+
+scrollbar {
+	handle-width: 4px;
+	handle-color: @selected;
+	background-color: rgba(255, 255, 255, 0.1);
+	border-radius: 10px;
+	padding: 0;
+	margin: 0 0 0 5px;
+}
+
+element {
+	background-color: transparent;
+	text-color: @foreground;
+	border-radius: 8px;
+	padding: 8px 10px;
+	spacing: 8px;
+	transition: 200;
+}
+
+element normal.normal {
+	background-color: transparent;
 	text-color: @foreground;
 }
-element alternate {
-	background-color: @background-alt;
+
+element alternate.normal {
+	background-color: rgba(255, 255, 255, 0.02);
+	text-color: @foreground;
 }
-element selected {
+
+element selected.normal {
 	background-color: @selected;
-	text-color: #FFFFFF;
-	border: 2px;
-	border-color: @active;
+	text-color: @foreground;
 	border-radius: 8px;
 }
-mainbox { padding: 10px; }
-inputbar { children: [prompt, entry]; }
-listview { lines: 10; }
+
+element selected.active {
+	background-color: @selected-hover;
+	text-color: @foreground;
+}
+
+element selected.urgent {
+	background-color: @urgent;
+	text-color: @foreground;
+}
+
+element-icon {
+	size: 1.3em;
+	padding: 0 8px 0 0;
+}
+
+element-text {
+	text-color: inherit;
+	vertical-align: 0.5;
+}
+
+message {
+	background-color: transparent;
+	border: 0px;
+}
+
+textbox {
+	background-color: transparent;
+	text-color: @foreground;
+}

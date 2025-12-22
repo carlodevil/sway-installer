@@ -14,11 +14,15 @@ input * {
 
 
 # Background: wallpaper with solid Nord fallback
-exec_always --no-startup-id sh -lc 'if [ -f "$HOME/Pictures/wallpaper.webp" ]; then exec swaybg -m fill -i "$HOME/Pictures/wallpaper.webp"; else exec swaybg -m solid_color -c "#2E3440"; fi'
+exec killall -q swaybg || true
+exec swaybg -m fill -i ~/Pictures/wallpaper.webp || swaybg -m solid_color -c "#2E3440"
 
 # Wayland/systemd env (for portals/Electron apps)
 exec_always --no-startup-id dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP=sway
 exec_always --no-startup-id systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP
+
+# Start user session target (this starts waybar, mako, etc.)
+exec_always --no-startup-id systemctl --user start sway-session.target
 
 
 

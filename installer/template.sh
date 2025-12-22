@@ -140,19 +140,18 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends "${INS
 
 # ── mandatory display manager: greetd + tuigreet ────────────────────────────
 log "Installing greetd (mandatory display manager)"
-DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends greetd || warn "greetd install failed"
+DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends greetd tuigreet || warn "greetd/tuigreet install failed"
 
-if ! command -v cargo >/dev/null 2>&1; then
-  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends cargo || true
-fi
-if ! command -v tuigreet >/dev/null 2>&1; then
-  log "Building tuigreet via cargo"
-  sudo -u "$TARGET_USER" bash -lc 'cargo install --locked greetd-tuigreet' || warn "tuigreet build failed"
-  [[ -f "$HOME_DIR/.cargo/bin/tuigreet" ]] && install -Dm0755 "$HOME_DIR/.cargo/bin/tuigreet" /usr/local/bin/tuigreet || true
+# Create greeter user required by greetd
+if ! id greeter >/dev/null 2>&1; then
+  log "Creating greeter system user"
+  useradd -M -G video -s /sbin/nologin greeter || warn "Failed to create greeter user"
 fi
 
-GREET_CMD="/usr/local/bin/tuigreet --time --remember --cmd 'systemctl --user start sway.service'"
+# Configure greetd to use tuigreet
+GREET_CMD="tuigreet --time --remember --cmd 'systemctl --user start sway.service'"
 if ! command -v tuigreet >/dev/null 2>&1; then
+  warn "tuigreet not found, falling back to direct sway launch"
   GREET_CMD="/usr/bin/sway"
 fi
 cat >/etc/greetd/config.toml <<CFG
@@ -211,6 +210,8 @@ tar -xzf "$TMPD/payload.tgz" -C "$TMPD/payload"
 copy_tree() {
   local SRC=$1 DST=$2
   (cd "$SRC" && find . -type f -print0) | while IFS= read -r -d '' rel; do
+    # Skip wallpaper directory (handled separately)
+    if [[ "$rel" == ./wallpaper/* ]]; then continue; fi
     local to="$DST/${rel#./}"
     local content; content=$(cat "$SRC/$rel")
     install_user_file_with_prompt "$rel" "$to" "$content"
@@ -221,11 +222,22 @@ as_user "mkdir -p '$HOME_DIR/.config'"
 log "Installing configs"
 copy_tree "$TMPD/payload/configs" "$HOME_DIR/.config"
 
-# Deploy wallpaper
+# Deploy wallpaper (binary copy, not text)
 if [[ -f "$TMPD/payload/configs/wallpaper/wallpaper.webp" ]]; then
   log "Installing wallpaper"
   as_user "mkdir -p '$HOME_DIR/Pictures'"
-  install_user_file_with_prompt "wallpaper" "$HOME_DIR/Pictures/wallpaper.webp" "$(cat "$TMPD/payload/configs/wallpaper/wallpaper.webp")"
+  dst="$HOME_DIR/Pictures/wallpaper.webp"
+  if as_user "test -e '$dst'"; then
+    log "wallpaper exists: $dst"; c=$(prompt_choice "Replace wallpaper?")
+    case "$c" in
+      o) log "Overwriting $dst"; cp "$TMPD/payload/configs/wallpaper/wallpaper.webp" "$dst"; chown "$TARGET_USER":"$TARGET_USER" "$dst" ;;
+      b) bak="${dst}.bak.$(date +%Y%m%d-%H%M%S)"; as_user "mv '$dst' '$bak'" || true; log "Backed up to $bak"; cp "$TMPD/payload/configs/wallpaper/wallpaper.webp" "$dst"; chown "$TARGET_USER":"$TARGET_USER" "$dst" ;;
+      s) log "Skipped wallpaper" ;;
+    esac
+  else
+    cp "$TMPD/payload/configs/wallpaper/wallpaper.webp" "$dst"
+    chown "$TARGET_USER":"$TARGET_USER" "$dst"
+  fi
 fi
 
 # Install udev rule for backlight control

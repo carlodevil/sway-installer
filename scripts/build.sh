@@ -26,9 +26,21 @@ fi
 # encode payload (make newline handling portable across base64 implementations)
 B64=$(base64 "$TAR_PATH" | tr -d '\n')
 
-# inject payload into template
+# inject payload into template (use temp file to avoid arg length limits)
 INSTALLER="$DIST_DIR/setup.sh"
-sed "s|$PLACEHOLDER|$B64|g" "$ROOT_DIR/installer/template.sh" > "$INSTALLER"
+B64_FILE="$WORK_DIR/payload.b64"
+printf "%s" "$B64" > "$B64_FILE"
+
+# Use a simple shell script to do the replacement
+{
+  while IFS= read -r line; do
+    if [[ "$line" == *"$PLACEHOLDER"* ]]; then
+      printf '%s\n' "${line//$PLACEHOLDER/$B64}"
+    else
+      printf '%s\n' "$line"
+    fi
+  done < "$ROOT_DIR/installer/template.sh"
+} > "$INSTALLER"
 chmod +x "$INSTALLER"
 
 echo "Built: $INSTALLER"
